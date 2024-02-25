@@ -1,117 +1,267 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+# from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
 from pathlib import Path
-import numpy as np
-import os
 
+"""РАБОТА С ЧИСЛОВЫМИ ПЕРЕМЕННЫМИ"""
 
-# path = 'D:/MLops/work1/'
-
-df = pd.read_csv('D:/MLops/work1/test.csv')
-# print(df)
-
-#######################################################################################
-######################  ПРЕОБРАЗОВАНИЯ ЧИСЛОВЫХ ПРИЗНАКОВ #############################
-#######################################################################################
+df_train = pd.read_csv('train/train.csv')
+X_train = df_train[['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed', 'ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term', 'Credit_History', 'Property_Area']]
+y_train = df_train[['Loan_Status']]
+df_test = pd.read_csv('test/test.csv')
+X_test = df_test[['Gender', 'Married', 'Dependents', 'Education', 'Self_Employed', 'ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term', 'Credit_History', 'Property_Area']]
+y_test = df_test[['Loan_Status']]
 
 # Замена пропущенных значений на 1, значений "3+" на 4 и Male на 1
-for index, row in df.iterrows():
+for index, row in X_train.iterrows():
   if row['Dependents'] == "3+":
-    df.loc[index, 'Dependents'] = "4"
+    X_train.loc[index, 'Dependents'] = "3"
   elif pd.isnull(row['Dependents']):
-    df.loc[index, 'Dependents'] = "1"
-  elif row['Dependents'] == "Male":
-    df.loc[index, 'Dependents'] = "1"
-
-# Заменяем пропущенные значение в колонке Gender на значения male
-for index, row in df.iterrows():
-  if pd.isnull(row['Gender']):
-    # print(index)
-    df['Gender'] = df.loc[index, 'Gender'] = "Male"
-
-# Заменяем пропущенные значение в колонке Self_Employed на значения No
-for index, row in df.iterrows():
-  if pd.isnull(row['Self_Employed']):
-    df['Self_Employed'] = df.loc[index, 'Self_Employed'] = "No"
-
-# Пропущенные значения в колонке Loan_Amount_Term заменить на среднее по колонке
-df['Loan_Amount_Term'] = df['Loan_Amount_Term'].fillna(df['Loan_Amount_Term'].mean())
-
-# Пропущенные значения в колонке Credit_History заменить на 0
-for index, row in df.iterrows():
-  if pd.isnull(row['Credit_History']):
-    df.loc[index, 'Credit_History'] = 0
-
-# Пропущенные значения в колонке Loan_Amount_Term заменить на среднее по колонке
-df['Loan_Amount_Term'].fillna(df['Loan_Amount_Term'].mean())
+    X_train.loc[index, 'Dependents'] = "1"
 
 # Конвертируем колонку Dependents в float
-df['Dependents'] = df['Dependents'].astype(float)
+X_train['Dependents'] = X_train['Dependents'].astype(float)
 
-#######################################################################################
-###########  НОРМАЛИЗАЦИЯ ЧИСЛОВЫХ ПРИЗНАКОВ ТИПА FLOAT ЧЕРЕЗ MinMaxScaler ############
-#######################################################################################
+# Замена пропущенных значений на 1, значений "3+" на 4 и Male на 1
+for index, row in X_test.iterrows():
+  if row['Dependents'] == "3+":
+    X_test.loc[index, 'Dependents'] = "3"
+  elif pd.isnull(row['Dependents']):
+    X_test.loc[index, 'Dependents'] = "1"
 
-minmax = MinMaxScaler(feature_range = (0, 1))
-# minmax()
+# Конвертируем колонку Dependents в float
+X_test['Dependents'] = X_test['Dependents'].astype(float)
 
-numerical_df = df[['Dependents', 'ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term', 'Credit_History']]
-minmax.fit(numerical_df)
+# Заменяем пропущенные значение в колонке Gender на значения male
+for index, row in X_train.iterrows():
+  if pd.isnull(row['Gender']):
+    # print(index)
+    X_train.loc[index, 'Gender'] = "Male"
 
-numerical_df = minmax.fit_transform(numerical_df)
+# Заменяем пропущенные значение в колонке Gender на значения male
+for index, row in X_test.iterrows():
+  if pd.isnull(row['Gender']):
+    # print(index)
+    X_test.loc[index, 'Gender'] = "Male"
+
+# Заменяем пропущенные значение в колонке Self_Employed на значения No
+for index, row in X_train.iterrows():
+  if pd.isna(row['Self_Employed']):
+    X_train.loc[index, 'Self_Employed'] = "No"
+
+# Заменяем пропущенные значение в колонке Self_Employed на значения No
+for index, row in X_test.iterrows():
+  if pd.isna(row['Self_Employed']):
+    X_test.loc[index, 'Self_Employed'] = "No"
+
+print(f" Credit_History {X_train['Self_Employed'].unique()}")
+print(f" Credit_History {X_test['Self_Employed'].unique()}")
+
+# Пропущенные значения в колонке Loan_Amount_Term заменить на среднее по колонке
+X_train['Loan_Amount_Term'] = (X_train['Loan_Amount_Term'].fillna(X_train['Loan_Amount_Term'].mean())).round(0)
+
+# Пропущенные значения в колонке Loan_Amount_Term заменить на среднее по колонке
+X_test['Loan_Amount_Term'] = (X_test['Loan_Amount_Term'].fillna(X_test['Loan_Amount_Term'].mean())).round(0)
+
+# Преобразуем к типу object
+X_train['Credit_History'] = X_train['Credit_History'].astype('object')
+# Пропущенные значения в колонке Credit_History заменить на 0
+for index, row in X_train.iterrows():
+  if pd.isna(row['Credit_History']) or row['Credit_History'] == 0:
+    X_train.loc[index, 'Credit_History'] = 'No'
+  elif row['Credit_History'] == 1 :
+    X_train.loc[index, 'Credit_History'] = 'Yes'
+
+# Преобразуем к типу object
+X_test['Credit_History'] = X_test['Credit_History'].astype('object')
+# Пропущенные значения в колонке Credit_History заменить на 0
+for index, row in X_test.iterrows():
+  if pd.isna(row['Credit_History']) or row['Credit_History'] == 0:
+    X_test.loc[index, 'Credit_History'] = 'No'
+  elif row['Credit_History'] == 1 :
+    X_test.loc[index, 'Credit_History'] = 'Yes'
+
+print(f" Credit_History {X_train['Credit_History'].unique()}")
+print(f" Credit_History {X_test['Credit_History'].unique()}")
 
 
-#######################################################################################
-######################  ПРЕОБРАЗОВАНИЯ КАТЕГОРИАЛЬНЫХ ПРИЗНАКОВ  ######################
-#######################################################################################
+print(X_test.info())
 
-# ДРОПНУТЬ Loan_ID
-# КАТЕГОРИАЛЬНЫЕ ПЕРЕМЕННЫЕ - 'Gender'(2), 'Married'(2), 'Education'(2), 'Self_Employed' (['No', 'Yes', nan]) , 'Property_Area'(['Rural', 'Urban', 'Semiurban'])
-# 'Loan_Status'(2) отдельно
+print(X_train.info())
+
+# from sklearn.preprocessing import MinMaxScaler
+
+# minmax = MinMaxScaler(feature_range = (0, 1))
+# # minmax()
+
+# numerical_df = df[['Dependents', 'ApplicantIncome', 'CoapplicantIncome', 'LoanAmount', 'Loan_Amount_Term']]
+# minmax.fit(numerical_df)
+
+# numerical_df = minmax.fit_transform(numerical_df)
+
+"""РАБОТА С КАТЕГОРИАЛЬНЫМИ ПЕРЕМЕННЫМИ"""
 
 # Пропущенные значения в колонке Self_Employed заменить на No
-for index, row in df.iterrows():
+for index, row in X_train.iterrows():
   if pd.isna(row['Self_Employed']):
     # print(index)
-    df.loc[index, 'Self_Employed'] = "No"
+    X_train.loc[index, 'Self_Employed'] = "No"
 
+# Пропущенные значения в колонке Self_Employed заменить на No
+for index, row in X_test.iterrows():
+  if pd.isna(row['Self_Employed']):
+    # print(index)
+    X_test.loc[index, 'Self_Employed'] = "No"
 
 # Пропущенные значения в колонке Property_Area заменить на No
-for index, row in df.iterrows():
+for index, row in X_train.iterrows():
   if pd.isna(row['Property_Area']):
     # print(index)
-    df.loc[index, 'Property_Area'] = "No"
+    X_train.loc[index, 'Property_Area'] = "No"
 
-category_df = df['Gender', 'Married', 'Education', 'Self_Employed', 'Property_Area']
+category_X_train = X_train[['Gender', 'Married', 'Education', 'Self_Employed', 'Property_Area', 'Credit_History']]
 
-#######################################################################################
-########  НОРМАЛИЗАЦИЯ КАТЕГОРИАЛЬНЫХ ПРИЗНАКОВ ТИПА OBJECT ЧЕРЕЗ OneHotEncoder #######
-#######################################################################################
+# Пропущенные значения в колонке Property_Area заменить на No
+for index, row in X_test.iterrows():
+  if pd.isna(row['Property_Area']):
+    # print(index)
+    X_test.loc[index, 'Property_Area'] = "No"
+
+category_X_test = X_test[['Gender', 'Married', 'Education', 'Self_Employed', 'Property_Area', 'Credit_History']]
+
+cat_columns = []
+num_columns = []
+
+for column_name in X_test.columns:
+    if (X_test[column_name].dtypes == object):
+        cat_columns +=[column_name]
+    else:
+        num_columns +=[column_name]
+
+print('categorical columns:\t ',cat_columns, '\n len = ',len(cat_columns))
+
+print('numerical columns:\t ',  num_columns, '\n len = ',len(num_columns))
+
+cat_columns = []
+num_columns = []
+
+for column_name in X_train.columns:
+    if (X_train[column_name].dtypes == object):
+        cat_columns +=[column_name]
+    else:
+        num_columns +=[column_name]
+
+print('categorical columns:\t ',cat_columns, '\n len = ',len(cat_columns))
+
+print('numerical columns:\t ',  num_columns, '\n len = ',len(num_columns))
+
+"""Приведем целевые метки и 0 и 1. Для этого воспользуемся объектом LabelEncoder() из модуля preprocessing
+
+Применение преобразований уже стандартное для нас
+
+Создаем объект
+обучаем методом .fit()
+Смотрим что получилось
+"""
+
+Label_train = LabelEncoder()
+Label_train.fit(y_train) # задаем столбец, который хотим преобразовать
+print(f'в аттрибуте .classes_ хранится информация "какой класс как шифруетс y_train{Label_train.classes_}') # в аттрибуте .classes_ хранится информация "какой класс как шифруется"
+
+Label_test = LabelEncoder()
+Label_test.fit(y_test) # задаем столбец, который хотим преобразовать
+ # в аттрибуте .classes_ хранится информация "какой класс как шифруется"
+print(f'в аттрибуте .classes_ хранится информация "какой класс как шифруетс y_test{Label_test.classes_}') # в аттрибуте .classes_ хранится информация "какой класс как шифруется"
+
+target_train = Label_train.transform(y_train)
+print(f'Преобразование целевой пересенной y_train {target_train}')
+
+target_test = Label_test.transform(y_test)
+print(f'Преобразование целевой пересенной y_test {target_test}')
+
+
+print(f'категориальные переменные {cat_columns}')
+
+# создаем "полотно", на котором будем "рисовать" графики
+fig, axs = plt.subplots(1,5,figsize=(20,  5))
+#Говорим что у нас будет 1 строка и 5 столбца
+
+X_train.hist(column = num_columns, ax = axs )
+
+# создаем "полотно", на котором будем "рисовать" графики
+fig, axs = plt.subplots(1,5,figsize=(20,  5))
+
+#Говорим что у нас будет 1 строка и 5 столбца
+
+X_test.hist(column = num_columns, ax = axs )
+
+"""СТАНДАРТИЗАЦИЯ И НОРМАЛИЗАЦИЯ ПРИЗНАКОВ (ЧИСЛОВЫЕ И КАТЕГОРИАЛЬНЫЕ)"""
+
+# Приведение числовых признаков
+scale_test = StandardScaler()
+scale_test.fit(X_test[num_columns])
+print(f'Приведение числовых признаков test {scale_test.mean_},{scale_test.scale_}')
+
+# Приведение числовых признаков
+scale_train = StandardScaler()
+scale_train.fit(X_train[num_columns])
+print(f'Приведение числовых признаков train {scale_train.mean_}, {scale_train}')
+
+scaled_test = scale_test.transform(X_test[num_columns])
+df_standard_test = pd.DataFrame(scaled_test, columns= num_columns)
+
+scaled_train = scale_train.transform(X_train[num_columns])
+df_standard_train = pd.DataFrame(scaled_train, columns= num_columns)
+
+df_standard_train.hist(figsize = (20,5), layout= (1,5))
+
+df_standard_test.hist(figsize = (20,5), layout= (1,5))
+
+# Приведение категориальных признаков
 # создадим объект класса OneHotEncoder
 # параметр sparse = True выдал бы результат в сжатом формате
 onehotencoder = OneHotEncoder(sparse_output = False)
 
-category_df = pd.DataFrame(onehotencoder.fit_transform(category_df))
+df_onehot_train = pd.DataFrame(onehotencoder.fit_transform(X_train[cat_columns]))
+
+# Приведение категориальных признаков
+# создадим объект класса OneHotEncoder
+# параметр sparse = True выдал бы результат в сжатом формате
+
+df_onehot_test = pd.DataFrame(onehotencoder.fit_transform(X_test[cat_columns]))
 
 
+# Объединяем нормализованные и стандиртизированные признаки
+df1_train = pd.DataFrame(df_standard_train)
+df2_train = pd.DataFrame(df_onehot_train)
 
-####################################################################################
-################### ОБЪЕДИНЕНИЕ DF И СОХРАНЕНИЕ В ОТДЕЛЬНЫЙ ФАЙЛ ###################
-####################################################################################
-# Объединяем результаты преобразований
+result_df_train = pd.concat([df1_train, df2_train], axis=1)
 
-df1 = pd.DataFrame(numerical_df)
-df2 = pd.DataFrame(category_df)
 
-result_df = pd.concat([df1, df2], axis=1)
-print(result_df)
+# Объединяем нормализованные и стандиртизированные признаки
+df1_test = pd.DataFrame(df_standard_test)
+df2_test = pd.DataFrame(df_onehot_test)
 
-# print(norm_test_data)
+result_df_test = pd.concat([df1_test, df2_test], axis=1)
 
-np.savetxt('D:/MLops/work1/result_df.csv', result_df, delimiter =',')
 
-####################################################################################
-#############################№№№№№№№№№№№№№№№№№№№№№##################################
-####################################################################################
+plt.figure(figsize=(15, 8))
+sns.heatmap(result_df_train.corr(), annot=True, cmap="YlGnBu")
+
+plt.figure(figsize=(15, 8))
+sns.heatmap(result_df_test.corr(), annot=True, cmap="YlGnBu")
+
+with open('test/y_test.npy', 'wb') as f:
+    np.save(f, target_test)
+with open('train/y_train.npy', 'wb') as f:
+    np.save(f, target_train)
+
+result_df_test.to_csv('test/X_test.csv')
+result_df_train.to_csv('train/X_train.csv')
