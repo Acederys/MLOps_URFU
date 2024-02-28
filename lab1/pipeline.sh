@@ -1,4 +1,6 @@
 pip install -r requirements.txt
+mkdir test
+mkdir  train
 cp kaggle.json ~/.kaggle/kaggle.json
 chmod 600 kaggle.json
 kaggle datasets download -d bhavikjikadara/loan-status-prediction
