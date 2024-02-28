@@ -31,17 +31,19 @@
 
 | Столбец  | Данные | Тип | Наличие пропусков  | Способ замены | Способ преобразования |
 | ------------- | ------------- | ------------ | ------------- |------------ | ------------- |
-| Gender  | Male/Female | категориальный  | 5 | Male  |  LabelEncoder |
-|  Married  | Yes/No  |  категориальный  | 0  | Male  |  LabelEncoder |
-| Dependents  | 0/1/2/3+  | категориальный  | 8  | 1  | LabelEncoder  |
-| Education  | Graduate/Not Graduate  | категориальный  | 0  | -  | LabelEncoder  |
-| Self_Employed  | Yes/No | категориальный  | 21  | No  | LabelEncoder  |
+| Gender  | Male/Female | категориальный  | 5 | Male  |  OrdinalEncoder |
+|  Married  | Yes/No  |  категориальный  | 0  | -  |  OrdinalEncoder |
+| Dependents  | 0/1/2/3+  | категориальный  | 8  | 0  | OrdinalEncoder  |
+| Education  | Graduate/Not Graduate  | категориальный  | 0  | -  | OrdinalEncoder  |
+| Self_Employed  | Yes/No | категориальный  | 21  | No  | OrdinalEncoder  |
 | ApplicantIncome | 150-9703  | числовые  | 0  | -  | StandardScaler  |
 | CoapplicantIncome  | 0-33837  | числовые  | 0  | -  | StandardScaler  |
 | LoanAmount  | 9-150  | числовые  | 0  | -  | StandardScaler  |
-| Loan_Amount_Term  | 12-480  | числовые  | 11  | среднее по колонке  | StandardScaler  |
-| Credit_History  | 1/0  | категориальный  | 30  | 0  | LabelEncoder  |
-| Property_Area  | Rural/Urban/Semiurban	 | категориальный  | 0  | -  | LabelEncoder  |
+| Loan_Amount_Term  | 12-480  | числовые  | 11  | 360  | StandardScaler  |
+| Credit_History  | 1/0  | категориальный  | 30  | 0  | OrdinalEncoder  |
+| Property_Area  | Rural/Urban/Semiurban	 | категориальный  | 0  | -  | OrdinalEncoder  |
 | Loan_Status (целевой)  | Y/N  | категориальный  | 0 | -  | LabelEncoder  |
 
-Для обучения модели использована Логистическая регрессия и Случайный лес
+Для обучения модели использована Логистическая регрессия. Вывод осуществляется в консоль.
+
+`Accuracy: 0.753 || Precision: 0.794 || Recall: 0.893 || F1 score: 0.84`
