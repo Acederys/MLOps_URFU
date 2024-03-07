@@ -34,7 +34,7 @@ def data_preprocessing(df, data=''):
         y.to_csv("test/test_labels.csv", index=False)
 
 
-train = pd.read_csv('train/train_diabet.csv')
-test = pd.read_csv('test/val_diabet.csv')
+train = pd.read_csv('train/train.csv')
+test = pd.read_csv('test/val.csv')
 data_preprocessing(train, data='train')
 data_preprocessing(test, data='test')
