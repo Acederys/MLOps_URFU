@@ -3,8 +3,8 @@ from sklearn.metrics import accuracy_score
 import pickle
 
 
-file3 = r'D:\1.УЧЕБА ИИИ 2023-2025\Второй семестр 2024\3. АВТОМАТИЗАЦИЯ МО\Задание 2\test_features.csv'
-file4 = r'D:\1.УЧЕБА ИИИ 2023-2025\Второй семестр 2024\3. АВТОМАТИЗАЦИЯ МО\Задание 2\test_labels.csv'
+file3 = r'test/test_features.csv'
+file4 = r'test/test_labels.csv'
 
 X_test = pd.read_csv(file3)
 y_test = pd.read_csv(file4)
