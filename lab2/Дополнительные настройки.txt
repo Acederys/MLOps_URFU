@@ -1,0 +1,5 @@
+При помощи команды sudo visudo /etc/sudoers внесли изменения в файл sudoers: 
+добавили строки
+"#includedir /etc/sudoers.d"
+"jenkins ALL=(ALL) NOPASSWD: ALL". 
+Тем самым предоставили полный доступ пользователю jenkins ко всем командам с использованием sudo, без необходимости ввода пароля.
