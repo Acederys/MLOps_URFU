@@ -1,4 +1,4 @@
-При помощи команды sudo visudo /etc/sudoers внесли изменения в файл sudoers: 
+При помощи команды "sudo visudo /etc/sudoers" внесли изменения в файл sudoers: 
 добавили строки
 "#includedir /etc/sudoers.d"
 "jenkins ALL=(ALL) NOPASSWD: ALL". 
