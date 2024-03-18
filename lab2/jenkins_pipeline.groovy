@@ -5,7 +5,7 @@ pipeline {
         stage('Git') {
             steps {
                 sh 'sudo rm -rf *'
-                git branch: 'module2', url: 'https://github.com/Acederys/MLOps_URFU.git'
+                git branch: 'main', url: 'https://github.com/Acederys/MLOps_URFU.git'
             }
         }
         stage('Project preparation') {
