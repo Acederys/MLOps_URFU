@@ -98,3 +98,66 @@ chd	      -  Ответ, ишемическая болезнь сердца
 
 
 ![image](https://github.com/Acederys/MLOps_URFU/assets/139765792/743deccc-c69c-4dba-a89e-383d918ff621)
+
+## Module 3
+Сведения
+
+В практическом задание по модулю вам необходимо применить полученные знания по работе с docker (и docker-compose). Вам необходимо использовать полученные ранее знания по созданию микросервисов. В этом задании необходимо развернуть микросервис в контейнере докер.
+ 
+Этапы задания 
+1.	Подготовить python код для модели и микросервиса
+2.	Создать Docker file
+3.	Создать docker образ
+4.	Запустить docker контейнер и проверить его работу 
+   
+### Запуск
+
+#### Если не устанволен docker 
+
+Add Docker's official GPG key:
+
+`sudo apt-get update`
+
+`sudo apt-get install ca-certificates curl`
+
+`sudo install -m 0755 -d /etc/apt/keyrings`
+
+`sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc`
+
+`sudo chmod a+r /etc/apt/keyrings/docker.asc`
+
+Add the repository to Apt sources:
+
+`echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null`
+  
+`sudo apt-get update`
+
+#### Установите пакеты Docker
+
+`sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+
+#### Сборка образа
+
+`docker build -t app:latest -f Dockerfile .`
+
+Найдем созданный образ:
+
+`docker images | grep app`
+
+####  Запуск образа
+
+`docker run -p 8501:8501 -d app`
+
+### остановка контейнера
+
+Смотрим номера запущенных контейнеров
+
+`docker ps`
+
+Останавливаем контейнер
+
+`docker stop {номер конейнера}`
+
