@@ -151,7 +151,7 @@ Add the repository to Apt sources:
 
 `docker run -p 8501:8501 -d app`
 
-### остановка контейнера
+#### Остановка контейнера
 
 Смотрим номера запущенных контейнеров
 
@@ -161,3 +161,23 @@ Add the repository to Apt sources:
 
 `docker stop {номер конейнера}`
 
+#### Использование docker-compose
+
+Для установки *docker-compose* выполняем команду:
+
+`sudo apt-get update
+sudo apt-get install docker-compose`
+
+В корневой директории проекта создаем файл *docker-compose.yml* со следующим содержанием:
+
+`
+services:
+  streamlit-app:
+    build: .
+    ports:
+      - "8501:8501"
+`
+
+Запускаем docker-compose при помощи команды:
+
+`docker-compose up`
