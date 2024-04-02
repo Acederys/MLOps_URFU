@@ -181,3 +181,9 @@ services:
 Запускаем docker-compose при помощи команды:
 
 `docker-compose up`
+
+#### Dickerhub
+
+Образ выгружен на dockerhub: 
+
+https://hub.docker.com/repository/docker/acederus/mlops/general
