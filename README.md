@@ -47,3 +47,143 @@
 Для обучения модели использована Логистическая регрессия. Вывод осуществляется в консоль.
 
 `Accuracy: 0.753 || Precision: 0.794 || Recall: 0.893 || F1 score: 0.84`
+
+
+## Module 2
+Сведения
+
+Конвеер с использованием Jenkins
+Срок заканчивается 18 марта 2024 г., 23:59
+Инструкции
+Нужно разработать собственный конвейер автоматизации для проекта машинного обучения. Для этого понадобится виртуальная машина с установленным Jenkins, python и необходимыми библиотеками. В ходе выполнения практического задания вам необходимо автоматизировать сбор данных, подготовку датасета, обучение модели и работу модели. 
+ 
+Этапы задания 
+1.	Развернуть сервер с Jenkins, установить необходимое программное обеспечение для работы над созданием модели машинного обучения. 
+2.	Выбрать способ получения данных (скачать из github, из Интернета, wget, SQL запрос, …). 
+3.	Провести обработку данных, выделить важные признаки, сформировать датасеты для тренировки и тестирования модели, сохранить. 
+4.	Создать и обучить на тренировочном датасете модель машинного обучения, сохранить в pickle или аналогичном формате. 
+5.	Загрузить сохраненную модель на предыдущем этапе и проанализировать ее качество на тестовых данных. 
+
+   
+### Запуск
+
+Загрузите в каталог `kaggle.json`. Инструкцию можно посмотреть [здесь](https://www.kaggle.com/docs/api).
+
+Запустите ./pipeline.sh
+
+### Описание датасета
+
+Датасет взят из [kaggle]([https://www.kaggle.com/datasets/itssuru/loan-data](https://www.kaggle.com/datasets/waalbannyantudre/south-african-heart-disease-dataset)), использованы данные о сердечно-сосудистых заболеваниях.
+
+Описание столбцов 
+
+
+sbp	      - Систолическое артериальное давление
+tobacco	  -  Совокупный табак (кг)
+ldl	      -  Уровень холестерина липопротеинов низкой плотности
+adiposity	-  Тяжелый избыточный вес (числовой вектор)
+famhist	  -  Семейный анамнез сердечно-сосудистых заболеваний
+typea	    -  Поведение типа А
+obesity	  -  Чрезмерное накопление жира (числовой вектор)
+alcohol	  -  Текущее потребление алкоголя
+age	      -  Возраст начала
+chd	      -  Ответ, ишемическая болезнь сердца
+
+
+![MLops2](https://github.com/Acederys/MLOps_URFU/assets/139765792/613fb3b3-d82b-44dc-a06c-170c885f21c6)
+
+
+Для обучения модели использована Логистическая регрессия.
+Результат:
+
+
+![image](https://github.com/Acederys/MLOps_URFU/assets/139765792/743deccc-c69c-4dba-a89e-383d918ff621)
+
+## Module 3
+Сведения
+
+В практическом задание по модулю вам необходимо применить полученные знания по работе с docker (и docker-compose). Вам необходимо использовать полученные ранее знания по созданию микросервисов. В этом задании необходимо развернуть микросервис в контейнере докер.
+ 
+Этапы задания 
+1.	Подготовить python код для модели и микросервиса
+2.	Создать Docker file
+3.	Создать docker образ
+4.	Запустить docker контейнер и проверить его работу 
+   
+### Запуск
+
+#### Если не устанволен docker 
+
+Add Docker's official GPG key:
+
+`sudo apt-get update`
+
+`sudo apt-get install ca-certificates curl`
+
+`sudo install -m 0755 -d /etc/apt/keyrings`
+
+`sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc`
+
+`sudo chmod a+r /etc/apt/keyrings/docker.asc`
+
+Add the repository to Apt sources:
+
+`echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null`
+  
+`sudo apt-get update`
+
+#### Установите пакеты Docker
+
+`sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+
+#### Сборка образа
+
+`docker build -t app:latest -f Dockerfile .`
+
+Найдем созданный образ:
+
+`docker images | grep app`
+
+####  Запуск образа
+
+`docker run -p 8501:8501 -d app`
+
+#### Остановка контейнера
+
+Смотрим номера запущенных контейнеров
+
+`docker ps`
+
+Останавливаем контейнер
+
+`docker stop {номер конейнера}`
+
+#### Использование docker-compose
+
+Для установки *docker-compose* выполняем команду:
+
+`sudo apt-get update
+sudo apt-get install docker-compose`
+
+В корневой директории проекта создаем файл *docker-compose.yml* со следующим содержанием:
+
+`
+services:
+  streamlit-app:
+    build: .
+    ports:
+      - "8501:8501"
+`
+
+Запускаем docker-compose при помощи команды:
+
+`docker-compose up`
+
+#### Dickerhub
+
+Образ выгружен на dockerhub: 
+
+https://hub.docker.com/repository/docker/acederus/mlops/general
