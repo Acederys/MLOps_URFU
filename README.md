@@ -187,3 +187,9 @@ services:
 Образ выгружен на dockerhub: 
 
 https://hub.docker.com/repository/docker/acederus/mlops/general
+
+#### Модель для классификации изображений
+
+Модель взяла с hugging Face: `google/vit-base-patch16-224`
+
+
